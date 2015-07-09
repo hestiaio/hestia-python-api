@@ -1,0 +1,29 @@
+import os.path
+from setuptools import setup, find_packages
+
+
+# Utility function to read the contents of short files.
+def read(fname):
+    with open(os.path.join(os.path.dirname(__file__), fname)) as f:
+        return f.read()
+
+install_requires = [
+    l for l in read('requirements.txt').split('\n')
+    if l and not l.startswith('#')]
+
+setup(
+    name='Hestia Python API',
+    description='Python library for accessing the hestia.io API',
+    url='https://www.hestia.io',
+
+    version='0.0.1',
+
+    packages=find_packages(),
+
+    author_email='info@hestia.io',
+    author='hestia.io',
+
+    install_requires=install_requires,
+
+    include_package_data=True,
+)
