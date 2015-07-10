@@ -29,7 +29,8 @@ installation_code: my_installation
 
     @httpretty.activate
     def test_source_address(self):
-        httpretty.register_uri(httpretty.POST, "https://test.hestia.io/photovoltaic/my_installation/inverter/solar_river/readings",
+        httpretty.register_uri(httpretty.POST,
+                               "https://test.hestia.io/photovoltaic/my_installation/inverter/solar_river/readings",
                                status=202,
                                content_type="application/json")
 
