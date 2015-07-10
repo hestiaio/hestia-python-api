@@ -13,7 +13,7 @@ install_requires = [
     if l and not l.startswith('#')]
 
 setup(
-    name='Hestia Python API',
+    name='hestia-api',
     version='0.0.1',
     description='Python library for accessing the hestia.io API',
     author_email='info@hestia.io',
