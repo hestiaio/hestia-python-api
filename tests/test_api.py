@@ -1,7 +1,6 @@
 from hestia.api import HestiaApi
 import unittest
 import httpretty
-from sure import expect
 
 try:
     from unittest.mock import patch
@@ -34,13 +33,12 @@ installation_code: my_installation
                                status=202,
                                content_type="application/json")
 
-        fake = MagicMock()
-        fake.date_taken = 12345
+        fake = MagicMock(date_taken=12345)
         self.api.record_solar_river_reading(fake)
 
-        expect(httpretty.last_request().method).to.equal("POST")
-        expect(httpretty.last_request().body.__len__()).to.equal(139)
-        expect(httpretty.last_request().headers['content-type']).to.equal('application/json')
+        assert httpretty.last_request().method == "POST"
+        assert httpretty.last_request().body.__len__() == 139
+        assert httpretty.last_request().headers['content-type'] == 'application/json'
 
 
 class TestRecordEmonReading(unittest.TestCase):
@@ -63,11 +61,10 @@ property_code: my_property
                                status=202,
                                content_type="")
 
-        mock_time = MagicMock()
-        mock_time.return_value = 1436377530
+        mock_time = MagicMock(return_value=1436377530)
         with patch('time.time', mock_time):
             self.api.record_emon([[123, 10, 345, 0, 0], [345, 10, 123, 0, 0]])
 
-        expect(httpretty.last_request().method).to.equal("POST")
-        expect(httpretty.last_request().body).to.equal(b"data=[[123,10,345,0,0],[345,10,123,0,0]]&sentat=1436377530")
-        expect(httpretty.last_request().headers['content-type']).to.equal('application/x-www-form-urlencoded')
+        assert httpretty.last_request().method == "POST"
+        assert httpretty.last_request().body == b"data=[[123,10,345,0,0],[345,10,123,0,0]]&sentat=1436377530"
+        assert httpretty.last_request().headers['content-type'] == 'application/x-www-form-urlencoded'
