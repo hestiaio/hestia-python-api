@@ -14,7 +14,7 @@ install_requires = [
 
 setup(
     name='hestia-api',
-    version='0.0.3',
+    version='0.0.4',
     description='Python library for accessing the hestia.io API',
     author_email='info@hestia.io',
     author='hestia.io',
