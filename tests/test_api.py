@@ -68,3 +68,29 @@ property_code: my_property
         assert httpretty.last_request().method == "POST"
         assert httpretty.last_request().body == b"data=[[123,10,345,0,0],[345,10,123,0,0]]&sentat=1436377530"
         assert httpretty.last_request().headers['content-type'] == 'application/x-www-form-urlencoded'
+
+
+class TestStatus(unittest.TestCase):
+    def setUp(self):
+        config_file = """
+[Remote]
+url: https://test.hestia.io
+username: username
+password: password
+
+[Emon]
+property_code: my_property
+        """
+        settings = settings_from_string(config_file)
+        self.api = HestiaApi(settings)
+
+    @httpretty.activate
+    def test_source_address(self):
+        httpretty.register_uri(httpretty.GET, "https://test.hestia.io/status",
+                               status=200,
+                               content_type="application/json")
+
+        response = self.api.status()
+
+        assert response == 200
+        assert httpretty.last_request().method == "GET"

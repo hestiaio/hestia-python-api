@@ -51,7 +51,8 @@ class HestiaApi:
 
         self.__log.debug('Posting %s' % json.dumps(payload))
         self.__post(
-            'photovoltaic/' + self.__settings.get('Photovoltaic', 'installation_code') + '/inverter/solar_river/readings',
+            'photovoltaic/' + self.__settings.get('Photovoltaic',
+                                                  'installation_code') + '/inverter/solar_river/readings',
             json.dumps(payload),
             {'content-type': 'application/json'})
 
@@ -63,16 +64,38 @@ class HestiaApi:
         self.__post('property/' + self.__settings.get('Emon', 'property_code') + '/emon/readings', payload,
                     {'content-type': 'application/x-www-form-urlencoded'})
 
+    def status(self):
+        return self.__get('status', {'content-type': 'application/json'})
+
     def __post(self, path, payload, headers=None):
         if not headers:
             headers = {}
-        url = urljoin(self.__settings.get('Remote', 'url'), path)
-        authentication = (self.__settings.get('Remote', 'username'), self.__settings.get('Remote', 'password'))
+        url = self.__remote_url(path)
 
+        self.__log.debug('Sending POST request to %s' % url)
         r = requests.post(url,
                           timeout=5,
                           data=payload,
                           headers=headers,
-                          auth=authentication)
-        self.__log.debug('Hestia server response %s' % r.status_code)
+                          auth=self.__authentication())
+        self.__log.debug('Received server response %s' % r.status_code)
         return r.status_code
+
+    def __get(self, path, headers=None):
+        if not headers:
+            headers = {}
+        url = self.__remote_url(path)
+
+        self.__log.debug('Sending GET request to %s' % url)
+        r = requests.get(url,
+                         timeout=5,
+                         headers=headers,
+                         auth=self.__authentication())
+        self.__log.debug('Received server response %s' % r.status_code)
+        return r.status_code
+
+    def __remote_url(self, path):
+        return urljoin(self.__settings.get('Remote', 'url'), path)
+
+    def __authentication(self):
+        return self.__settings.get('Remote', 'username'), self.__settings.get('Remote', 'password')
