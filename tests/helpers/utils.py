@@ -3,11 +3,6 @@ import io
 import hestia.api
 
 try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
-
-try:
     from unittest.mock import patch
     from unittest.mock import MagicMock
 except ImportError:

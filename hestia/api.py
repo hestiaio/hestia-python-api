@@ -2,18 +2,8 @@ import logging
 import requests
 import simplejson as json
 import time
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
-
-try:
-    from urllib.parse import urljoin
-except ImportError:
-    # Python 2.7
-    from urlparse import urljoin
-
+from six.moves.urllib.parse import urljoin
+import six.moves.configparser as configparser
 from sys import version_info
 
 
