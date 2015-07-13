@@ -8,6 +8,7 @@ from sys import version_info
 
 
 def load_configuration():
+    """Load the configuration specified in /etc/hestia.conf."""
     config = configparser.ConfigParser()
     config_file = '/etc/hestia.conf'
 
@@ -21,10 +22,17 @@ def load_configuration():
 
 class HestiaApi:
     def __init__(self, settings):
+        """Initialize a new instance of the HestiaApi.
+
+        Args:
+            settings: (configparser.ConfigParser): The settings to use.
+
+        """
         self.__log = logging.getLogger("HestiaApi")
         self.__settings = settings
 
     def record_solar_river_reading(self, pv_output):
+        """Record the readings from a Solar River inverter."""
         payload = {
             "date": str(pv_output.date_taken),
             "temp": pv_output.internal_temperature.value,
@@ -47,6 +55,7 @@ class HestiaApi:
             {'content-type': 'application/json'})
 
     def record_emon(self, data):
+        """Record the data from the EmonHub."""
         sent_at = int(time.time())
         data_string = json.dumps(data, separators=(',', ':'))
         payload = "data=" + data_string + "&sentat=" + str(sent_at)
@@ -55,6 +64,7 @@ class HestiaApi:
                     {'content-type': 'application/x-www-form-urlencoded'})
 
     def status(self):
+        """Get the status of hestia.io."""
         return self.__get('status', {'content-type': 'application/json'})
 
     def __post(self, path, payload, headers=None):
