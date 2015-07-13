@@ -9,6 +9,7 @@ script:
 - tox
 deploy:
   provider: pypi
+  docs_dir: docs/_build/html
   user: lukesmith
   password:
     secure: QWAIyiEhZXzVoRT++fR71WZil//BzcKD5LPLX1xZmEaRhAJOqdJ7BxyfHl8kDTxo43WXZL/pyvF8/OFvmA42A11+Vl83A5HNiDFwy0XoZNy80xWk+zb0i9cHRd2l95sMozAUe9MOjkGyXB3+0oUlXbXbuwaEOUGfUUzVaYMBu4WgjLoB/yrj/mGBzVjR4VuU0Kr/+TYoXBi1fWPgKMHm8U8EjK4HTmXmeZ8lYbIMAsJqR8beKVWWxt77XKmPH2ssv6LH/Flp241Nfx3srjV4MScmospYb230qjx6V/hTfLlvVzOyjyVy0GR5vwylpxvBcjtoNiUrsJeHAf+L10UaPXMtNHREZuiyO9mcGbfTVHA92kt2g3HBFbynHS0ipE0xInXF7jSeQlnJd7Z+6c/0yeUksCMN3Duix/kKFoOhpc1udy4FDRCcj8LDA+uZW9HS4tdPor/172VGdEJ/+Ie9uxb+BWODB9YvHgaY5y8c0MyQO2uXWJ1qVbxxTxzN7NatWF+soHMqL32vLVuvfRsItfnqM+JIMU+HltbVGIKxaNevbpwcyQEN87zgVAd/M7LR5/+KSLY6sL89I1O4kr0rTjYoM64P15DNRW27fLtj/ELBaSOJ809mj0nO4AguxVjZx3x5DzUmykN5Fg9fx/Iry8bhV/56m9U3hKOZjoFIyaw=
