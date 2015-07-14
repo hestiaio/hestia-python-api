@@ -3,8 +3,8 @@ env:
 - TOXENV=py27
 - TOXENV=py34
 install:
-- pip install -r dev-requirements.txt
-- pip install -r requirements.txt
+- pip install tox
+- if [ "$TOXENV" == py34 ]; pip install sphinx; fi
 script:
 - tox
 - if [ "$TOXENV" == py34 ]; then cd docs && make html && cd -; fi
