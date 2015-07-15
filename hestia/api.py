@@ -5,6 +5,8 @@ import time
 from six.moves.urllib.parse import urljoin
 from ._version import __version__ as hestia_version
 
+__all__ = ['HestiaApi']
+
 
 class HestiaApi:
 
