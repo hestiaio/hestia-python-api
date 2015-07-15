@@ -3,35 +3,19 @@ import requests
 import simplejson as json
 import time
 from six.moves.urllib.parse import urljoin
-import six.moves.configparser as configparser
-from sys import version_info
-
-
-def load_configuration():
-    """Load the configuration specified in /etc/hestia.conf."""
-    config = configparser.ConfigParser()
-    config_file = '/etc/hestia.conf'
-
-    if version_info.major == 2:
-        config.readfp(open(config_file))
-    else:
-        with open(config_file) as h:
-            config.read_string(h.read())
-    return config
+from ._version import __version__ as hestia_version
 
 
 class HestiaApi:
+
+    __version__ = hestia_version
+
     def __init__(self, settings):
-        """Initialize a new instance of the HestiaApi.
-
-        Args:
-            settings: (configparser.ConfigParser): The settings to use.
-
-        """
+        """Initialize a new instance of the HestiaApi."""
         self.__log = logging.getLogger("HestiaApi")
         self.__settings = settings
 
-    def record_solar_river_reading(self, pv_output):
+    def record_solar_river_reading(self, installation_code, pv_output):
         """Record the readings from a Solar River inverter."""
         payload = {
             "date": str(pv_output.date_taken),
@@ -49,18 +33,17 @@ class HestiaApi:
 
         self.__log.debug('Posting %s' % json.dumps(payload))
         self.__post(
-            'photovoltaic/' + self.__settings.get('Photovoltaic',
-                                                  'installation_code') + '/inverter/solar_river/readings',
+            'photovoltaic/%s/inverter/solar_river/readings' % installation_code,
             json.dumps(payload),
             {'content-type': 'application/json'})
 
-    def record_emon(self, data):
+    def record_emon(self, property_code, data):
         """Record the data from the EmonHub."""
         sent_at = int(time.time())
         data_string = json.dumps(data, separators=(',', ':'))
         payload = "data=" + data_string + "&sentat=" + str(sent_at)
 
-        self.__post('property/' + self.__settings.get('Emon', 'property_code') + '/emon/readings', payload,
+        self.__post('property/%s/emon/readings' % property_code, payload,
                     {'content-type': 'application/x-www-form-urlencoded'})
 
     def status(self):
@@ -70,6 +53,9 @@ class HestiaApi:
     def __post(self, path, payload, headers=None):
         if not headers:
             headers = {}
+
+        headers['User-Agent'] = 'Hestia Python API/%s' % HestiaApi.__version__
+
         url = self.__remote_url(path)
 
         self.__log.debug('Sending POST request to %s' % url)
@@ -84,6 +70,9 @@ class HestiaApi:
     def __get(self, path, headers=None):
         if not headers:
             headers = {}
+
+        headers['User-Agent'] = 'Hestia Python API/%s' % HestiaApi.__version__
+
         url = self.__remote_url(path)
 
         self.__log.debug('Sending GET request to %s' % url)
@@ -95,7 +84,10 @@ class HestiaApi:
         return r.status_code
 
     def __remote_url(self, path):
-        return urljoin(self.__settings.get('Remote', 'url'), path)
+        root = 'https://www.hestia.io'
+        if 'hestia_url' in self.__settings:
+            root = self.__settings['hestia_url']
+        return urljoin(root, path)
 
     def __authentication(self):
-        return self.__settings.get('Remote', 'username'), self.__settings.get('Remote', 'password')
+        return self.__settings['username'], self.__settings['password']
